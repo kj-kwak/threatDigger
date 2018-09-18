@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import os
-import sys
+import os, sys, binascii, re, hashlib, time, csv
 import argparse
 import magic
-import binascii
-import re
-import hashlib
 import pefile
-import time
-import csv
-from tabulate import tabulate
+
+try:
+    from tabulate import tabulate
+except:
+    print ("You need to install tabulate library (pip install tabulate)")
 
 def parseArgument():
     parser = argparse.ArgumentParser()
