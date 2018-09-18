@@ -108,7 +108,7 @@ class threatDigger:
         result, type = self.isPe()
         if (result): #if target file is PE
             try:
-                self.richHeaderXorkey, self.richHeaderDansAnchor, self.richHeaderCleardata = self.parseRichheader() #get result of Richheader Parsing
+                self.richHeaderXorkey, self.richHeaderDansAnchor, self.richHeaderCleardata = self.parseRichheader() #get Richheader Parsing Result
                 pe = pefile.PE(self.work_file)
                 try:
                     self.internalName = pe.FileInfo[0][0].StringTable[0].entries[b'InternalName'].decode("UTF-8")
