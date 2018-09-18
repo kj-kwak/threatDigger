@@ -1,14 +1,25 @@
 # -*- coding: utf-8 -*-
 
 import os, sys, binascii, re, hashlib, time, csv
-import argparse
-import magic
-import pefile
+try:
+    import argparse
+except:
+    print ("pip install python-magic")
+
+try:
+    import magic
+except:
+    print ("pip install python-magic")
+
+try: 
+    import pefile
+except:
+    print ("pip install pefile")
 
 try:
     from tabulate import tabulate
 except:
-    print ("You need to install tabulate library (pip install tabulate)")
+    print ("pip install tabulate")
 
 def parseArgument():
     parser = argparse.ArgumentParser()
@@ -128,10 +139,7 @@ class threatDigger:
                     for exp in pe.DIRECTORY_ENTRY_EXPORT.symbols:
                         exportName = exp.name.decode("utf-8")
                         if (len(exportName) > 1):
-                            if (len(exportName) > 20):
-                                self.exportName += "\n"+exportName + " "
-                            else:
-                                self.exportName += exportName + " "
+                            self.exportName += exportName + " "
                         else:
                             continue
                 except:
