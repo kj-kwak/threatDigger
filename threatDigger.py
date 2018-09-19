@@ -39,9 +39,9 @@ class threatDigger:
         self.work_file = ''
         self.displaylist = []
         self.entityDic = {}
-        self.graph = Graph('G', filename='threatDigger.gv', engine='circo')
+        self.graph = Graph('G', filename='threatDigger.gv', engine='sfdp') #sfdp, circo
         #f.node_attr.update(color='lightblue2', style='filled')
-        self.graph.attr(rankdir='LR', size='8,5', rank='source')
+        self.graph.attr(rankdir='LR', size='8,5', rank='source',  splines='spline', overlap='false')
         #self.graph.graph_attr.update(rank='same')
 
         self.varInit()
@@ -68,7 +68,7 @@ class threatDigger:
         tempDic = {'MD5': self.md5, 'Buildtime': buildtime, 'Export Function': self.exportName, 'Internal Name': self.internalName, 'Company Name': self.companyName, 'Richheader Xorkey': self.richHeaderXorkey, 'RH Cleardata MD5': self.richHeaderClearDataMD5, 'Imphash': self.imphash}
 
         self.entityDic[self.filename] = tempDic
-        print (self.entityDic)
+        #print (self.entityDic)
 
         if len(self.filename) > 40:
             self.displaylist.append([self.filename[:40]+"...", self.md5, self.buildtime, self.exportName, self.internalName, self.companyName, self.richHeaderXorkey, self.richHeaderDansAnchor, self.richHeaderClearDataMD5, self.imphash])
@@ -77,12 +77,12 @@ class threatDigger:
 
     def exportGraphviz(self):
         self.graph.attr('node', shape='box')
-        print ("graphviz: ", self.entityDic)
+        #print ("graphviz: ", self.entityDic)
         for filename, y in self.entityDic.items():
                 for entityName, value in y.items():
                     if (value == "-"):
                         continue
-                    print (filename, entityName, value)
+                    #print (filename, entityName, value)
                     self.graph.node(value, color='red', style='filled', fontcolor='white')
 
         self.graph.attr('node', shape='circle')
