@@ -38,6 +38,7 @@ class threatDigger:
 
     def varInit(self):
         self.filename = '-'
+        self.md5 = ''
         self.buildtime = '-'
         self.internalName = '-'
         self.companyName = '-'
@@ -49,18 +50,18 @@ class threatDigger:
         self.exportName = ''
         
     def display(self):
-        print (tabulate(self.displaylist, headers=['Filename', 'Buildtime', "Export Function" ,'InternalName', 'CompanyName','RHXorkey', 'DansAnchor', 'RHCleardataMD5', 'Imphash'
+        print (tabulate(self.displaylist, headers=['Filename', 'MD5', 'Buildtime', "Export Function" ,'InternalName', 'CompanyName','RHXorkey', 'DansAnchor', 'RHCleardataMD5', 'Imphash'
         ]))
         
     def displayAppend(self):
         if len(self.filename) > 40:
-            self.displaylist.append([self.filename[:40]+"...", self.buildtime, self.exportName, self.internalName, self.companyName, self.richHeaderXorkey, self.richHeaderDansAnchor, self.richHeaderClearDataMD5, self.imphash])
+            self.displaylist.append([self.filename[:40]+"...", self.md5, self.buildtime, self.exportName, self.internalName, self.companyName, self.richHeaderXorkey, self.richHeaderDansAnchor, self.richHeaderClearDataMD5, self.imphash])
         else:
-            self.displaylist.append([self.filename, self.buildtime, self.exportName, self.internalName, self.companyName, self.richHeaderXorkey, self.richHeaderDansAnchor, self.richHeaderClearDataMD5, self.imphash])    
+            self.displaylist.append([self.filename, self.md5, self.buildtime, self.exportName, self.internalName, self.companyName, self.richHeaderXorkey, self.richHeaderDansAnchor, self.richHeaderClearDataMD5, self.imphash])    
 
     def csvAppend(self):
         #fieldnames = ['Filename', 'Buildtime', 'Internal Name', 'Company Name', 'Richheader Xorkey', 'Richheader DansAnchor', 'RH Cleardata MD5', 'Imphash']
-        self.writer.writerow({'Filename': self.filename, 'Buildtime': self.buildtime, 'Export Function': self.exportName, 'Internal Name': self.internalName, 'Company Name': self.companyName, 'Richheader Xorkey': self.richHeaderXorkey, 
+        self.writer.writerow({'Filename': self.filename, 'MD5': self.md5, 'Buildtime': self.buildtime, 'Export Function': self.exportName, 'Internal Name': self.internalName, 'Company Name': self.companyName, 'Richheader Xorkey': self.richHeaderXorkey, 
                                      'Richheader DansAnchor': self.richHeaderDansAnchor, 'RH Cleardata MD5': self.richHeaderClearDataMD5, 'Imphash': self.imphash})
         return
         
@@ -69,6 +70,8 @@ class threatDigger:
         content = bytearray()
         for i in fh : content += i
         fh.close()
+
+        self.md5 = hashlib.md5(content).hexdigest()
         return content
 
     def xorDans(self, key):
@@ -174,7 +177,7 @@ class threatDigger:
         if self.args.csv:
             self.csvFilename = "threatDigger_result.csv"
             with open(self.csvFilename,"w") as self.csvfile:
-                fieldnames = ['Filename', 'Buildtime', 'Export Function', 'Internal Name', 'Company Name', 'Richheader Xorkey', 'Richheader DansAnchor', 'RH Cleardata MD5', 'Imphash']
+                fieldnames = ['Filename', 'MD5', 'Buildtime', 'Export Function', 'Internal Name', 'Company Name', 'Richheader Xorkey', 'Richheader DansAnchor', 'RH Cleardata MD5', 'Imphash']
                 self.writer = csv.DictWriter(self.csvfile, fieldnames=fieldnames)
                 self.writer.writeheader()
                 self.checkFileType()
