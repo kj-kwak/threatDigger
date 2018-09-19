@@ -64,7 +64,8 @@ class threatDigger:
         ]))
         
     def displayAppend(self):
-        tempDic = {'MD5': self.md5, 'Buildtime': self.buildtime.split(" ")[0].split(".")[0]+"."+self.buildtime.split(" ")[0].split(".")[1], 'Export Function': self.exportName, 'Internal Name': self.internalName, 'Company Name': self.companyName, 'Richheader Xorkey': self.richHeaderXorkey, 'RH Cleardata MD5': self.richHeaderClearDataMD5, 'Imphash': self.imphash}
+        buildtime = self.buildtime.split(" ")[0].split(".")[0]+"."+self.buildtime.split(" ")[0].split(".")[1]
+        tempDic = {'MD5': self.md5, 'Buildtime': buildtime, 'Export Function': self.exportName, 'Internal Name': self.internalName, 'Company Name': self.companyName, 'Richheader Xorkey': self.richHeaderXorkey, 'RH Cleardata MD5': self.richHeaderClearDataMD5, 'Imphash': self.imphash}
 
         self.entityDic[self.filename] = tempDic
         print (self.entityDic)
@@ -92,7 +93,6 @@ class threatDigger:
         self.graph.view()
 
     def csvAppend(self):
-        #fieldnames = ['Filename', 'Buildtime', 'Internal Name', 'Company Name', 'Richheader Xorkey', 'Richheader DansAnchor', 'RH Cleardata MD5', 'Imphash']
         self.writer.writerow({'Filename': self.filename, 'MD5': self.md5, 'Buildtime': self.buildtime, 'Export Function': self.exportName, 'Internal Name': self.internalName, 'Company Name': self.companyName, 'Richheader Xorkey': self.richHeaderXorkey, 
                                      'Richheader DansAnchor': self.richHeaderDansAnchor, 'RH Cleardata MD5': self.richHeaderClearDataMD5, 'Imphash': self.imphash})
         return
