@@ -41,7 +41,8 @@ class threatDigger:
         self.entityDic = {}
         self.graph = Graph('G', filename='threatDigger.gv', engine='circo')
         #f.node_attr.update(color='lightblue2', style='filled')
-        self.graph.attr(rankdir='LR', size='8,8')
+        self.graph.attr(rankdir='LR', size='8,5', rank='source')
+        #self.graph.graph_attr.update(rank='same')
 
         self.varInit()
 
@@ -63,7 +64,7 @@ class threatDigger:
         ]))
         
     def displayAppend(self):
-        tempDic = {'MD5': self.md5, 'Export Function': self.exportName, 'Internal Name': self.internalName, 'Company Name': self.companyName, 'Richheader Xorkey': self.richHeaderXorkey, 'RH Cleardata MD5': self.richHeaderClearDataMD5, 'Imphash': self.imphash}
+        tempDic = {'MD5': self.md5, 'Buildtime': self.buildtime.split(" ")[0].split(".")[0]+"."+self.buildtime.split(" ")[0].split(".")[1], 'Export Function': self.exportName, 'Internal Name': self.internalName, 'Company Name': self.companyName, 'Richheader Xorkey': self.richHeaderXorkey, 'RH Cleardata MD5': self.richHeaderClearDataMD5, 'Imphash': self.imphash}
 
         self.entityDic[self.filename] = tempDic
         print (self.entityDic)
@@ -81,7 +82,7 @@ class threatDigger:
                     if (value == "-"):
                         continue
                     print (filename, entityName, value)
-                    self.graph.node(value)
+                    self.graph.node(value, color='red', style='filled', fontcolor='white')
 
         self.graph.attr('node', shape='circle')
         for filename, y in self.entityDic.items():
