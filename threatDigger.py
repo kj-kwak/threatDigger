@@ -20,6 +20,10 @@ try:
     from tabulate import tabulate
 except:
     print ("pip install tabulate")
+try:
+    from graphviz import Digraph, Graph
+except:
+    print ("pip install graphviz")
 
 def parseArgument():
     parser = argparse.ArgumentParser()
@@ -34,6 +38,11 @@ class threatDigger:
         self.target = self.args.target
         self.work_file = ''
         self.displaylist = []
+        self.entityDic = {}
+        self.graph = Graph('G', filename='threatDigger.gv', engine='circo')
+        #f.node_attr.update(color='lightblue2', style='filled')
+        self.graph.attr(rankdir='LR', size='8,8')
+
         self.varInit()
 
     def varInit(self):
@@ -48,16 +57,38 @@ class threatDigger:
         self.richHeaderClearDataMD5 = '-'
         self.imphash = '-'
         self.exportName = ''
-        
-    def display(self):
+
+    def display(self): # Display result with stdout
         print (tabulate(self.displaylist, headers=['Filename', 'MD5', 'Buildtime', "Export Function" ,'InternalName', 'CompanyName','RHXorkey', 'DansAnchor', 'RHCleardataMD5', 'Imphash'
         ]))
         
     def displayAppend(self):
+        tempDic = {'MD5': self.md5, 'Export Function': self.exportName, 'Internal Name': self.internalName, 'Company Name': self.companyName, 'Richheader Xorkey': self.richHeaderXorkey, 'RH Cleardata MD5': self.richHeaderClearDataMD5, 'Imphash': self.imphash}
+
+        self.entityDic[self.filename] = tempDic
+        print (self.entityDic)
+
         if len(self.filename) > 40:
             self.displaylist.append([self.filename[:40]+"...", self.md5, self.buildtime, self.exportName, self.internalName, self.companyName, self.richHeaderXorkey, self.richHeaderDansAnchor, self.richHeaderClearDataMD5, self.imphash])
         else:
             self.displaylist.append([self.filename, self.md5, self.buildtime, self.exportName, self.internalName, self.companyName, self.richHeaderXorkey, self.richHeaderDansAnchor, self.richHeaderClearDataMD5, self.imphash])    
+
+    def exportGraphviz(self):
+        self.graph.attr('node', shape='box')
+        print ("graphviz: ", self.entityDic)
+        for filename, y in self.entityDic.items():
+                for entityName, value in y.items():
+                    if (value == "-"):
+                        continue
+                    print (filename, entityName, value)
+                    self.graph.node(value)
+
+        self.graph.attr('node', shape='circle')
+        for filename, y in self.entityDic.items():
+                for entityName, value in y.items():
+                    self.graph.edge(filename, value, label=entityName)
+
+        self.graph.view()
 
     def csvAppend(self):
         #fieldnames = ['Filename', 'Buildtime', 'Internal Name', 'Company Name', 'Richheader Xorkey', 'Richheader DansAnchor', 'RH Cleardata MD5', 'Imphash']
@@ -210,6 +241,7 @@ def main():
     td = threatDigger(args)    
     td.entry()
     td.display()
+    td.exportGraphviz()
     if td.args.csv:
         os.system("open "+td.csvFilename)
 
